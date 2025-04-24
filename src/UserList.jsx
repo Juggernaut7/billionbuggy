@@ -1,13 +1,19 @@
 import { useState } from "react";
 
-export default function UserList() {
-  const [users] = useState(["Alice", "Bob", "Charlie"]);
+ function UserList() {
+  const [users, setUsers] = useState(["Alice", "Bob", "Charlie"]);
   const [selectedUser, setSelectedUser] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
 
-  const showDetail = selectedUser !== null ? true : false;
+  const showDetail = selectedUser !== null;
 
-  const filteredUsers = users.filter((user) => user === searchTerm);
+  const filteredUsers = users.filter((user) =>
+    user.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
+  const handleSearch = (e) => {
+    setSearchTerm(e.target.value);
+  };
 
   const handleHover = (user) => {
     setTimeout(() => {
@@ -16,16 +22,21 @@ export default function UserList() {
   };
 
   return (
-    <div className="mt-4">
-      <h2 className="text-xl font-bold">Users</h2>
+    <div className="mt-4 flex flex-col bg-blue-500 p-5 rounded-md">
+      <h2 className="text-xl font-bold flex justify-center">Users</h2>
 
-      <input type="text" value={searchTerm} className="border p-2 mt-2" />
-
-      <ul>
+      <input
+        onChange={handleSearch}
+        type="text"
+        value={searchTerm}
+        className="border p-2 mt-2"
+        placeholder="Search users..."
+      />
+      <ul className="flex items-center gap-3 my-8">
         {(filteredUsers.length > 0 ? filteredUsers : users).map(
           (user, index) => (
             <li
-              key={index + Math.random()}
+              key={index}
               onClick={() => {
                 setSelectedUser(user);
               }}
@@ -49,7 +60,7 @@ export default function UserList() {
         )}
       </ul>
 
-      {showDetails && (
+      {showDetail && (
         <div className="mt-2 p-2 bg-yellow-100">
           Selected: {selectedUser}
           <p>Name length: {selectedUser.length}</p>
@@ -58,3 +69,5 @@ export default function UserList() {
     </div>
   );
 }
+
+export default UserList
